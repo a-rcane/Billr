@@ -11,10 +11,6 @@ class MappingOperations(DBOps):
 
     def subscribe_customer_to_product(self, map_customer_product: CustomerProductMap):
         try:
-            # product_id = request.args.get('product_id')
-            # customer_id = request.args.get('customer_id')
-            # map_customer_product = CustomerProductMap(product_id, customer_id)
-
             if map_customer_product is not None:
                 with self.create_session() as s:
                     s.add(map_customer_product)
@@ -26,6 +22,7 @@ class MappingOperations(DBOps):
                 return None
         except Exception as e:
             print(e)
+            return None
 
 
 if __name__ == '__main__':

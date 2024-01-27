@@ -19,13 +19,10 @@ class ProductOperations(DBOps):
                 return f'No product for specified id {product_id} exists'
         except Exception as e:
             print(e)
+            return None
 
     def add_product(self, product_inst: Product):
         try:
-            # send in api method
-            # product_name = request.args.get('product_name')
-            # product = Product(product_name)
-
             if product_inst is not None:
                 with self.create_session() as s:
                     s.add(product_inst)
@@ -37,6 +34,7 @@ class ProductOperations(DBOps):
                 return None
         except Exception as e:
             print(e)
+            return None
 
     def show_customers_for_product(self, product_id):
         try:
@@ -62,6 +60,7 @@ class ProductOperations(DBOps):
                 return None
         except Exception as e:
             print(e)
+            return None
 
 
 if __name__ == '__main__':

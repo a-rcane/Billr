@@ -20,13 +20,10 @@ class CustomerOperations(DBOps):
                 return None
         except Exception as e:
             print(e)
+            return None
 
     def add_customer(self, customer_inst: Customer):
         try:
-            # customer_name = request.args.get('customer_name')
-            # customer_email = request.args.get('customer_email')
-            # customer = Customer(customer_name, customer_email)
-
             if customer_inst is not None:
                 with self.create_session() as s:
                     s.add(customer_inst)
@@ -38,6 +35,7 @@ class CustomerOperations(DBOps):
                 return None
         except Exception as e:
             print(e)
+            return None
 
     def show_products_for_customer(self, customer_id):
         try:
@@ -63,6 +61,7 @@ class CustomerOperations(DBOps):
                 return None
         except Exception as e:
             print(e)
+            return None
 
 
 if __name__ == '__main__':
