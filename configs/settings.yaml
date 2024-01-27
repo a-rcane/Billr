@@ -1,0 +1,11 @@
+default:
+  name: 'Dev'
+  response: 'not-found 404'
+  db:
+    engine: 'postgresql'
+  secret_key: settings.get('secret_key')
+  SECURITY_PASSWORD_SALT: settings.get('SECURITY_PASSWORD_SALT')
+  DB_NAME: 'scrape'
+  DB_URI: 'postgresql+psycopg2://root:root@localhost:5432/billr'
+  host: 'localhost'
+  user: 'root'

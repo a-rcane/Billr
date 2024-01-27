@@ -1,6 +1,8 @@
-from flask import Flask
+from base.utils import create_app
+from configs.config import settings
 
-app = Flask(__name__)
+app = create_app()
+app.config['SECRET_KEY'] = settings.get('secret_key')
 
 
 @app.route('/')
