@@ -63,6 +63,54 @@ class CustomerOperations(DBOps):
             print(e)
             return None
 
+    def find_by_email(self, customer_email):
+        try:
+            with self.create_session() as s:
+                p = s.query(Customer).filter(Customer.customer_email == customer_email).first()
+                s.close()
+            if p is not None:
+                return {
+                    'customer_id': p.customer_id,
+                    'customer_name': p.customer_name,
+                    'customer_email': p.customer_email,
+                }
+            else:
+                print('Email is not a registered customer')
+                return None
+        except Exception as e:
+            print(e)
+            return None
+
+    def update_customer_by_email(self, customer_inst):
+        try:
+            with self.create_session() as s:
+                s.query(Customer).filter(Customer.customer_email == customer_inst.customer_email).\
+                    update({
+                        'customer_email': customer_inst.customer_email,
+                        'customer_name': customer_inst.customer_name,
+                    })
+                print('Successfully updated customer details')
+                s.commit()
+                s.close()
+
+            return f'Successfully updated customer details for {customer_inst.customer_email}'
+        except Exception as e:
+            print(e)
+            return None
+
+    def delete_customer_by_email(self, customer_email):
+        try:
+            with self.create_session() as s:
+                s.query(Customer).filter(Customer.customer_email == customer_email).\
+                    delete(synchronize_session='evaluate')
+                print('Successfully deleted customer details')
+                s.commit()
+                s.close()
+            return f'Successfully deleted customer details for {customer_email}'
+        except Exception as e:
+            print(e)
+            return None
+
 
 if __name__ == '__main__':
     customer_ops = CustomerOperations()

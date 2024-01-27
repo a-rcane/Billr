@@ -9,3 +9,5 @@ default:
   DB_URI: 'postgresql+psycopg2://root:root@localhost:5432/billr'
   host: 'localhost'
   user: 'root'
+  NGROK_API_KEY: settings.get('NGROK_API_KEY')
+  ENDPOINT_SECRET: 'whsec_mkM1KnLZIh3KBU7UnQIUwzPA6FXkPWTl'

@@ -24,6 +24,22 @@ class MappingOperations(DBOps):
             print(e)
             return None
 
+    def delete_by_customer_id(self, customer_id):
+        try:
+            if customer_id is not None:
+                with self.create_session() as s:
+                    s.query(CustomerProductMap).filter(CustomerProductMap.customer_id == customer_id).\
+                        delete(synchronize_session='evaluate')
+                    s.commit()
+                    s.close()
+
+                print('Successfully deleted mapping')
+            else:
+                print('Customer email was not provided')
+        except Exception as e:
+            print(e)
+            return None
+
 
 if __name__ == '__main__':
     map_ops = MappingOperations()
