@@ -1,5 +1,6 @@
 from base.db_ops.db_ops import DBOps
 from configs.config import settings
+from kafka_base.kafka_utils import stripe_consume
 from models.customer import Customer
 from models.customer_product_map import CustomerProductMap
 
@@ -28,8 +29,15 @@ class CustomerOperations(DBOps):
                 with self.create_session() as s:
                     s.add(customer_inst)
                     s.commit()
-                    print(f'Customer {customer_inst.customer_name} added to db')
+                    # print(f'Customer {customer_inst.customer_name} added to db')
                     s.close()
+                stripe_consume()
+                return {
+                    'customer_id': customer_inst.customer_id,
+                    'customer_name': customer_inst.customer_name,
+                    'customer_email': customer_inst.customer_email,
+                    'msg': 'Customer added'
+                }
             else:
                 print('Customer was not added')
                 return None

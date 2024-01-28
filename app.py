@@ -2,6 +2,7 @@ from base.utils import create_app
 from configs.config import settings
 from endpoints.apis import customer_apis, product_apis, mapping_apis
 from endpoints.webhooks import stripe_webhook
+from kafka_base.kafka_utils import stripe_consume
 
 app = create_app()
 app.config['SECRET_KEY'] = settings.get('secret_key')

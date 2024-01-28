@@ -1,0 +1,16 @@
+{
+    "name": "postgresql-connector",
+    "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "plugin.name": "pgoutput",
+    "database.hostname": "postgres",
+    "database.port": "5432",
+    "database.user": "root",
+    "database.password": "root",
+    "database.dbname": "billr",
+    "database.server.name": "postgres",
+    "table.include.list": "public.customer",
+    "table.whitelist": "public.customer",
+    "topic.prefix": "topic_customer"
+    }
+}
