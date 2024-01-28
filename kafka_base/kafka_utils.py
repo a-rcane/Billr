@@ -2,10 +2,8 @@ import io
 
 import avro
 from avro.io import DatumReader, BinaryDecoder
-from bson import json_util
-from kafka import KafkaProducer, KafkaConsumer
+from kafka import KafkaConsumer
 import stripe
-import json
 import os
 from configs.config import settings
 
