@@ -10,15 +10,18 @@ a customer added/edited on one system propagates to the other system within a fe
 
 1. Clone the project 
     `https://github.com/a-rcane/Billr.git` locally
-2. Run command `docker-compose up -d` to spin up docker
-3. Login into pgadmin on `localhost:5050` 
+2. Run command `pip install -r requirements.txt` and `docker-compose up -d`
+3. Run command `curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 127.0.0.1:8083/connectors/ --data "@c
+onfigs/debezium.json"` to start debezium-postgresql-connector
+4. Login into pgadmin on `localhost:5050` 
     using credentials `email: name@example.com` `password:admin`
-4. Create server postgres with `user: root` `password: root`
-5. Run queries as provided in `Billr/sql_scripts` directory to setup postgres
-6. Run command `ngrok http 5000`
-7. Use the link in ngrok (url) as `url/stripe/webhook` and register this as endpoint on stripe
-8. Under `configs/settings.yaml` update values for `NGROK_API_KEY` `ENDPOINT_SECRET` `STRIPE_API_KEY`
-9. Run `app.py`
+5. Create server postgres with `user: root` `password: root`
+6. Run queries as provided in `Billr/sql_scripts` directory to setup postgres
+7. Under `configs/settings.yaml` update values for `NGROK_API_KEY` `ENDPOINT_SECRET` `STRIPE_API_KEY`
+8. Run `app.py` then open ngrok and run `ngrok http 5000`
+9. Use the link in ngrok (url) as `url/stripe/webhook` and register this as endpoint on stripe
+
+
 
 ### APIs
 
