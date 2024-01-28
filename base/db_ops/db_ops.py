@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, NullPool
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 from configs.config import settings
@@ -12,7 +12,7 @@ class DBOps:
     def create_engine(self):
         if self.create is None:
             Base = declarative_base()
-            engine = create_engine(settings.DB_URI, echo=True)
+            engine = create_engine(settings.DB_URI, echo=True, poolclass=NullPool)
             self.create = Base.metadata.create_all(engine)
             return engine
 

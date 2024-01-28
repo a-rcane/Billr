@@ -1,6 +1,6 @@
 from base.db_ops.db_ops import DBOps
 from configs.config import settings
-from kafka_base.kafka_utils import stripe_consume
+from kafka_base.kafka_stripe import stripe_add_consume, stripe_update_consume, stripe_delete_consume
 from models.customer import Customer
 from models.customer_product_map import CustomerProductMap
 
@@ -18,28 +18,6 @@ class CustomerOperations(DBOps):
                 return p.customer_name
             else:
                 print(f'No customer for specified id {customer_id} exists')
-                return None
-        except Exception as e:
-            print(e)
-            return None
-
-    def add_customer(self, customer_inst: Customer):
-        try:
-            if customer_inst is not None:
-                with self.create_session() as s:
-                    s.add(customer_inst)
-                    s.commit()
-                    # print(f'Customer {customer_inst.customer_name} added to db')
-                    s.close()
-                stripe_consume()
-                return {
-                    'customer_id': customer_inst.customer_id,
-                    'customer_name': customer_inst.customer_name,
-                    'customer_email': customer_inst.customer_email,
-                    'msg': 'Customer added'
-                }
-            else:
-                print('Customer was not added')
                 return None
         except Exception as e:
             print(e)
@@ -81,40 +59,78 @@ class CustomerOperations(DBOps):
                     'customer_id': p.customer_id,
                     'customer_name': p.customer_name,
                     'customer_email': p.customer_email,
+                    'cus_id': p.cus_id
                 }
             else:
-                print('Email is not a registered customer')
+                print('Email does not belong to a registered customer')
                 return None
         except Exception as e:
             print(e)
             return None
 
-    def update_customer_by_email(self, customer_inst):
+    def update_customer(self, customer_inst: Customer):
         try:
-            with self.create_session() as s:
-                s.query(Customer).filter(Customer.customer_email == customer_inst.customer_email).\
-                    update({
-                        'customer_email': customer_inst.customer_email,
-                        'customer_name': customer_inst.customer_name,
-                    })
-                print('Successfully updated customer details')
-                s.commit()
-                s.close()
-
-            return f'Successfully updated customer details for {customer_inst.customer_email}'
+            if customer_inst is not None:
+                p = self.find_by_email(customer_inst.customer_email)
+                if p is None:
+                    return "Customer doesn't exist"
+                else:
+                    with self.create_session() as s:
+                        s.query(Customer).filter(Customer.customer_email == customer_inst.customer_email).\
+                            update({
+                                'customer_name': customer_inst.customer_name,
+                                'customer_email': customer_inst.customer_email,
+                                'cus_id': customer_inst.cus_id,
+                            })
+                        s.close()
+                    stripe_update_consume(customer_inst)
+                return 'Customer updated'
+            else:
+                print('Customer was not added')
+                return None
         except Exception as e:
             print(e)
             return None
 
-    def delete_customer_by_email(self, customer_email):
+    def add_customer(self, customer_inst: Customer):
         try:
-            with self.create_session() as s:
-                s.query(Customer).filter(Customer.customer_email == customer_email).\
-                    delete(synchronize_session='evaluate')
-                print('Successfully deleted customer details')
-                s.commit()
-                s.close()
-            return f'Successfully deleted customer details for {customer_email}'
+            if customer_inst is not None:
+                p = self.find_by_email(customer_inst.customer_email)
+                if p is None:
+                    with self.create_session() as s:
+                        s.add(customer_inst)
+                        s.commit()
+                        s.close()
+                    stripe_add_consume()
+                    return {
+                        'customer_id': customer_inst.customer_id,
+                        'customer_name': customer_inst.customer_name,
+                        'customer_email': customer_inst.customer_email,
+                        'msg': 'Customer added'
+                    }
+                else:
+                    print('Customer already exists')
+            else:
+                print('Customer was not added')
+                return None
+        except Exception as e:
+            print(e)
+            return None
+
+    def delete_customer(self, customer_email):
+        try:
+            existing = self.find_by_email(customer_email)
+            if existing is None:
+                return "Customer doesn't exist"
+            else:
+                with self.create_session() as s:
+                    s.query(Customer).filter(Customer.customer_email == customer_email).\
+                        delete(synchronize_session='evaluate')
+                    s.commit()
+                    print('Successfully deleted customer details')
+                    s.close()
+                stripe_delete_consume(existing['cus_id'])
+                return f'Successfully deleted customer details for {customer_email}'
         except Exception as e:
             print(e)
             return None
