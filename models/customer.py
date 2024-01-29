@@ -15,14 +15,16 @@ class Customer(Base):
     customer_name = sa.Column(sa.Text, nullable=False)
     customer_email = sa.Column(sa.VARCHAR, nullable=False)
     cus_id = sa.Column(sa.VARCHAR)
+    customer_status = sa.Column(sa.Text)
 
-    def __init__(self, customer_name, customer_email, cus_id):
+    def __init__(self, customer_name, customer_email, cus_id, customer_status):
         self.customer_name = customer_name
         self.customer_email = customer_email
         self.cus_id = cus_id
+        self.customer_status = customer_status
 
     def __repr__(self):
-        return f"{self.customer_id} {self.customer_name} {self.customer_email} {self.cus_id}"
+        return f"{self.customer_id} {self.customer_name} {self.customer_email} {self.cus_id} {self.customer_status}"
 
 
 if __name__ == '__main__':

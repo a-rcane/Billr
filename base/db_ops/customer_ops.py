@@ -1,6 +1,7 @@
+import time
+
 from base.db_ops.db_ops import DBOps
 from configs.config import settings
-from kafka_base.kafka_stripe import stripe_add_consume, stripe_update_consume, stripe_delete_consume
 from models.customer import Customer
 from models.customer_product_map import CustomerProductMap
 
@@ -59,7 +60,8 @@ class CustomerOperations(DBOps):
                     'customer_id': p.customer_id,
                     'customer_name': p.customer_name,
                     'customer_email': p.customer_email,
-                    'cus_id': p.cus_id
+                    'cus_id': p.cus_id,
+                    'customer_status': p.customer_status
                 }
             else:
                 print('Email does not belong to a registered customer')
@@ -75,16 +77,21 @@ class CustomerOperations(DBOps):
                 if p is None:
                     return "Customer doesn't exist"
                 else:
+                    if customer_inst.cus_id != '':
+                        cus_id = customer_inst.cus_id
+                    else:
+                        cus_id = p['cus_id']
                     with self.create_session() as s:
                         s.query(Customer).filter(Customer.customer_email == customer_inst.customer_email).\
                             update({
                                 'customer_name': customer_inst.customer_name,
                                 'customer_email': customer_inst.customer_email,
-                                'cus_id': customer_inst.cus_id,
+                                'cus_id': cus_id,
+                                'customer_status': customer_inst.customer_status
                             })
+                        s.commit()
                         s.close()
-                    stripe_update_consume(customer_inst)
-                return 'Customer updated'
+                    return 'Customer updated'
             else:
                 print('Customer was not added')
                 return None
@@ -100,13 +107,11 @@ class CustomerOperations(DBOps):
                     with self.create_session() as s:
                         s.add(customer_inst)
                         s.commit()
-                        s.close()
-                    stripe_add_consume()
                     return {
                         'customer_id': customer_inst.customer_id,
                         'customer_name': customer_inst.customer_name,
                         'customer_email': customer_inst.customer_email,
-                        'msg': 'Customer added'
+                        'customer_status': customer_inst.customer_status,
                     }
                 else:
                     print('Customer already exists')
@@ -124,12 +129,16 @@ class CustomerOperations(DBOps):
                 return "Customer doesn't exist"
             else:
                 with self.create_session() as s:
+                    s.query(Customer).filter(Customer.customer_email == customer_email). \
+                            update({
+                                'customer_status': 'DELETED',
+                            })
+                    s.commit()
                     s.query(Customer).filter(Customer.customer_email == customer_email).\
                         delete(synchronize_session='evaluate')
                     s.commit()
                     print('Successfully deleted customer details')
                     s.close()
-                stripe_delete_consume(existing['cus_id'])
                 return f'Successfully deleted customer details for {customer_email}'
         except Exception as e:
             print(e)

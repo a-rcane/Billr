@@ -18,7 +18,7 @@ class DBOps:
 
     def create_session(self):
         if self.create_engine() is not None:
-            Session = sessionmaker(bind=self.create_engine())
+            Session = sessionmaker(bind=self.create_engine(), expire_on_commit=False)
             return Session()
 
 

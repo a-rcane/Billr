@@ -10,7 +10,7 @@ def add_customer_info():
     try:
         customer_name = request.args.get('customer_name')
         customer_email = request.args.get('customer_email')
-        customer_inst = Customer(customer_name, customer_email, '')
+        customer_inst = Customer(customer_name, customer_email, None, 'CREATED')
         if customer_inst is not None:
             res = customer.add_customer(customer_inst)
             if res is not None:
@@ -28,7 +28,7 @@ def update_customer_info():
     try:
         customer_name = request.args.get('customer_name')
         customer_email = request.args.get('customer_email')
-        customer_inst = Customer(customer_name, customer_email, '')
+        customer_inst = Customer(customer_name, customer_email, None, 'UPDATED')
         if customer_inst is not None:
             res = customer.update_customer(customer_inst)
             if res is not None:

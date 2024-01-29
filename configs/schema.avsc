@@ -17,6 +17,10 @@
         {
             "name": "cus_id",
             "type": "string"
+        },
+        {
+            "name": "customer_status",
+            "type": "string"
         }
     ]
 }

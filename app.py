@@ -15,8 +15,8 @@ def ping():
 # apis
 '--------------------------------------------------------------------------------------------------------------------'
 app.add_url_rule('/customers/add', view_func=customer_apis.add_customer_info, methods=['POST'])
-app.add_url_rule('/customers/update', view_func=customer_apis.delete_customer_info, methods=['PUT'])
-app.add_url_rule('/customers/delete', view_func=customer_apis.update_customer_info, methods=['DELETE'])
+app.add_url_rule('/customers/update', view_func=customer_apis.update_customer_info, methods=['PUT'])
+app.add_url_rule('/customers/delete', view_func=customer_apis.delete_customer_info, methods=['DELETE'])
 app.add_url_rule('/customers/view-products', view_func=customer_apis.show_customer_products, methods=['GET'])
 
 app.add_url_rule('/products/add', view_func=product_apis.add_product_info, methods=['POST'])

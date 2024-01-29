@@ -2,7 +2,7 @@ import stripe
 from flask import request, jsonify
 
 from configs.config import settings
-from integrations.stripe_methods import add_to_local_from_stripe, delete_local_from_stripe, update_local_from_stripe
+from integrations.local_stripe import add_to_local_from_stripe, delete_local_from_stripe, update_local_from_stripe
 
 
 def webhook():
