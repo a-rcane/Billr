@@ -1,44 +1,27 @@
-import io
-import avro
-from avro.io import DatumReader, BinaryDecoder
+import json
+
 from kafka import KafkaConsumer
 import stripe
-import os
 from configs.config import settings
-
 
 stripe.api_key = settings.get('STRIPE_API_KEY')
 
 
-def data_reader():
-    try:
-        abs_path = os.path.dirname(__file__)
-        file_path = os.path.join(abs_path, '..\\configs\\schema.avsc')
-        schema = avro.schema.parse((open(file_path, "rb").read()).decode('utf-8'))
-        reader = DatumReader(schema)
-        return reader
-    except Exception as e:
-        print(e)
-        return None
-
-
-def decode(msg_value):
-    try:
-        message_bytes = io.BytesIO(msg_value)
-        message_bytes.seek(7)
-        decoder = BinaryDecoder(message_bytes)
-        reader = data_reader()
-        if reader is not None:
-            event_dict = reader.read(decoder)
-            return event_dict
-        else:
-            print('Reader returned None')
-            return None
-    except Exception as e:
-        print(e)
-        return None
-
-
+# def decode(msg_value):
+#     try:
+#         message_bytes = io.BytesIO(msg_value)
+#         message_bytes.seek(7)
+#         decoder = BinaryDecoder(message_bytes)
+#         reader = data_reader()
+#         if reader is not None:
+#             event_dict = reader.read(decoder)
+#             return event_dict
+#         else:
+#             print('Reader returned None')
+#             return None
+#     except Exception as e:
+#         print(e)
+#         return None
 def stripe_consumer():
     try:
         consumer = KafkaConsumer("postgres.public.customer", bootstrap_servers=["localhost:29092"])
@@ -48,7 +31,10 @@ def stripe_consumer():
         print('Subscription: ', consumer.subscription())
 
         for msg in consumer:
-            data = decode(msg.value)
+            data = msg.value
+            val = json.loads(data.decode('utf-8'))
+            print(val)
+            data = val['after']
             if data is not None:
                 if data['customer_status'] == 'CREATED':
                     add_stripe(data)

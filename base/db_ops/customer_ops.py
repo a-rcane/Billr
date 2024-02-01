@@ -77,7 +77,7 @@ class CustomerOperations(DBOps):
                 if p is None:
                     return "Customer doesn't exist"
                 else:
-                    if customer_inst.cus_id != '':
+                    if customer_inst.cus_id is not None:
                         cus_id = customer_inst.cus_id
                     else:
                         cus_id = p['cus_id']
@@ -133,9 +133,6 @@ class CustomerOperations(DBOps):
                             update({
                                 'customer_status': 'DELETED',
                             })
-                    s.commit()
-                    s.query(Customer).filter(Customer.customer_email == customer_email).\
-                        delete(synchronize_session='evaluate')
                     s.commit()
                     print('Successfully deleted customer details')
                     s.close()

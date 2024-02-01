@@ -10,10 +10,12 @@ def add_to_local_from_stripe(customer):
         if customer['name'] and customer['email'] is not None:
             existing = customer_ops.find_by_email(customer['email'])
             if existing is None:
+                print('New')
                 customer_inst = Customer(customer['name'], customer['email'], customer['id'], 'CREATED')
                 customer_ops.add_customer(customer_inst)
                 return 'Customer added locally'
             else:
+                print('Exists')
                 return update_local_from_stripe(customer)
         else:
             print('Customer name/email was not provided')

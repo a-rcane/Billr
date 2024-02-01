@@ -11,6 +11,10 @@
     "database.server.name": "postgres",
     "table.include.list": "public.customer",
     "table.whitelist": "public.customer",
-    "topic.prefix": "topic_customer"
+    "topic.prefix": "topic_customer",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": "false",
+    "value.converter.schemas.enable": "false"
     }
 }
