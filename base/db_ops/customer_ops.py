@@ -55,7 +55,7 @@ class CustomerOperations(DBOps):
             with self.create_session() as s:
                 p = s.query(Customer).filter(Customer.customer_email == customer_email).first()
                 s.close()
-            if p is not None:
+            if p is not None and p.customer_status != 'DELETED':
                 return {
                     'customer_id': p.customer_id,
                     'customer_name': p.customer_name,
